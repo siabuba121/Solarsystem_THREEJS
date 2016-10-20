@@ -61,6 +61,7 @@ function create_material(texturejpg){
 
 function create_camera(){
     var camera = new THREE.PerspectiveCamera()
+	camera.position.z+=500
     return camera;
 }
 function create_scene() {
