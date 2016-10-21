@@ -18,7 +18,6 @@ var Key = {
     this._pressed[event.keyCode] = true;
     if(event.keyCode===this.S){
         camera.position.z+=10;
-        rotacja=-rotacja;
     }
     if(event.keyCode===this.W){
         camera.position.z-=10;

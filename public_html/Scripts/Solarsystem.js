@@ -29,23 +29,18 @@ var mercury_axis,
         uran_axis,
         neptun_axis;
 
-var sphereMaterial =
-            new THREE.MeshLambertMaterial({
-                color: "blue"
-            });
- var sphereMaterial2 =
-            new THREE.MeshLambertMaterial({
-                color: 0xD84901
-            });           
-var sun_material=sphereMaterial2,
-        mercury_material=sphereMaterial,
-        wenus_material=sphereMaterial,
-        ziemia_material=sphereMaterial,
-        mars_material=sphereMaterial,
-        jowisz_material=sphereMaterial,
-        saturn_material=sphereMaterial,
-        uran_material=sphereMaterial,
-        neptun_material=sphereMaterial;
+var     saturn_ring;
+
+var     sun_material,
+        mercury_material,
+        wenus_material,
+        ziemia_material,
+        mars_material,
+        jowisz_material,
+        saturn_material,
+        uran_material,
+        neptun_material;
+
 function create_renderer(width, height) {
     var renderer = new THREE.WebGLRenderer();
     renderer.setSize(width, height);
@@ -53,10 +48,9 @@ function create_renderer(width, height) {
 }
 
 function create_material(texturejpg){
-   var texture = THREE.TextureLoader(texturejpg),
+   var texture = new THREE.TextureLoader().load(texturejpg);
    material = new THREE.MeshBasicMaterial({map: texture});
-   return material;
-   
+   return material; 
 }
 
 function create_camera(){
@@ -83,6 +77,13 @@ function create_planet(name, radius, segments, rings, material) {
     var planet = new THREE.Mesh(new THREE.SphereGeometry(radius, segments, rings), material);
     planet.name = name;
     return planet;
+}
+
+function create_ring(inner,outer,segments){
+   var geometry = new THREE.RingGeometry( inner, outer, segments );
+   var material = new THREE.MeshBasicMaterial( { color: "#CCCC99", side: THREE.DoubleSide } );
+   var ring = new THREE.Mesh( geometry, material );
+   return ring;
 }
 
 function create_orbit_axis(material) {
@@ -114,7 +115,9 @@ function setup_planet(){
     jowisz.position.x+=170;
     
     saturn=create_planet("saturn",12,10,10,saturn_material);
-    saturn_axis=create_orbit_axis(new THREE.MeshLambertMaterial({color: 0xD43401}))  
+    saturn_axis=create_orbit_axis(new THREE.MeshLambertMaterial({color: 0xD43401}))
+    saturn_ring=create_ring(15,22,50);
+    saturn_ring.rotation.x+=Math.PI/3;
     saturn.position.x+=200;
     
     uran=create_planet("uran",5.1,10,10,uran_material);
@@ -132,7 +135,7 @@ function scene_setup(){
     pointlight=create_pointlight(0,0,0,0,0);
     var c = document.getElementById("gameCanvas");
     c.appendChild(renderer.domElement);
-   // material_setup();
+    material_setup();
     setup_planet();
     add_planetsToScene();
     timeperiod=Date.now();
@@ -164,6 +167,7 @@ function add_planetsToScene(){
     scene.add(mars_axis);
     jowisz_axis.add(jowisz);
     scene.add(jowisz_axis);
+    saturn.add(saturn_ring);
     saturn_axis.add(saturn);
     scene.add(saturn_axis);
     uran_axis.add(uran)
