@@ -7,6 +7,7 @@ var timeperiod;
 var orbittime;
 
 var car;
+var skybox;
 
 var frametimestart;
 var frameactual;
@@ -59,6 +60,8 @@ function create_material(texturejpg){
 
 function create_camera(){
     var camera = new THREE.PerspectiveCamera()
+    camera.far=10000;
+    camera.updateProjectionMatrix();
 	camera.position.z+=500
     return camera;
 }
@@ -113,6 +116,44 @@ function create_ring(inner,outer,segments){
    return ring;
 }
 
+function create_skybox(x,y,z){
+    var prefixurl = "images/skybox/";
+    var urls = [ prefixurl + "posx.jpeg", prefixurl + "negx.jpeg",
+    prefixurl + "posy.jpeg", prefixurl + "negy.jpeg",
+    prefixurl + "posz.jpeg", prefixurl + "negz.jpeg" ];
+    var textureCube = THREE.CubeTextureLoader( urls );
+
+    var shader	= THREE.ShaderLib["cube"];
+	shader.uniforms["tCube"].value = textureCube;
+	var material = new THREE.ShaderMaterial({
+		fragmentShader	: shader.fragmentShader,
+		vertexShader	: shader.vertexShader,
+		uniforms	: shader.uniforms
+	});
+        skyboxMesh	= new THREE.Mesh( new THREE.CubeGeometry( 1000, 1000, 1000, 1, 1, 1, null, true ), material );
+    return skyboxMesh;
+}
+
+function create_skydome(x,y,z){
+    var geometry = new THREE.SphereGeometry(2000, 60, 40);  
+    var uniforms = {  
+    texture: { type: 't', value: THREE.ImageUtils.loadTexture('images/skybox/skydom.jpeg') }
+ };
+ 
+    var material = new THREE.ShaderMaterial( {  
+    uniforms:       uniforms,
+    vertexShader:   document.getElementById('sky-vertex').textContent,
+    fragmentShader: document.getElementById('sky-fragment').textContent
+});
+
+    skyBox = new THREE.Mesh(geometry, material);  
+    skyBox.scale.set(-1, 1, 1);  
+    skyBox.eulerOrder = 'XZY';  
+    skyBox.renderDepth = 2000.0;  
+    return skyBox;
+}
+
+
 function create_orbit_axis(material) {
     var cube = new THREE.Mesh(new THREE.BoxBufferGeometry(2, 2, 2), material);
     return cube;
@@ -165,6 +206,8 @@ function scene_setup(){
     pointlight=create_pointlight(0,0,0,0,0);
     var c = document.getElementById("gameCanvas");
     c.appendChild(renderer.domElement);
+    skybox=create_skydome();
+    scene.add(skybox);
     material_setup();
     setup_planet();
     add_planetsToScene();

@@ -1,33 +1,56 @@
 <!DOCTYPE html>
 <html>
-  <head>
-		<title>Game</title>
-		<style>
-			body {
-				background-color: green;
-			}
-			#gameCanvas {
-				background-color: green;
-				width: 1280px;
-				height: 720px;
-				margin: auto;
-				align: center;
-                                border:4px solid white;
-                                
-			}
-                        #fps{
-                           width: 30px;
-                           height: 30px;
-                           background-color: red;
-                        }
-		</style>
-	</head>
-	<body onload='scene_setup();'>
-            <div id='gameCanvas'><div id="fps"></div></div>
-		<script src='./Scripts/three.min.js'></script>
-		<script src='./Scripts/keyboard.js'></script>
-                <script src="Scripts/Solarsystem.js"></script>
-                <script src='./Scripts/Colladaloader.js'></script>
-                
-	</body>
+
+<head>
+	<title>Game</title>
+	<style>
+		body {
+			background-color: green;
+		}
+		
+		#gameCanvas {
+			background-color: green;
+			width: 1280px;
+			height: 720px;
+			margin: auto;
+			align: center;
+			border: 4px solid white;
+		}
+		
+		#fps {
+			width: 30px;
+			height: 30px;
+			background-color: red;
+		}
+	</style>
+</head>
+
+<body onload='scene_setup();'>
+	<div id='gameCanvas'>
+		<div id="fps"></div>
+	</div>
+	<script src='./Scripts/three.min.js'></script>
+	<script src='./Scripts/keyboard.js'></script>
+	<script src="Scripts/Solarsystem.js"></script>
+	<script src='./Scripts/Colladaloader.js'></script>
+	<script type="application/x-glsl" id="sky-vertex">  
+	varying vec2 vUV;
+
+void main() {  
+  vUV = uv;
+  vec4 pos = vec4(position, 1.0);
+  gl_Position = projectionMatrix * modelViewMatrix * pos;
+}
+</script>
+
+	<script type="application/x-glsl" id="sky-fragment">  
+	uniform sampler2D texture;  
+	varying vec2 vUV;
+
+	void main() {  
+  		vec4 sample = texture2D(texture, vUV);
+ 		 gl_FragColor = vec4(sample.xyz, sample.w);
+}
+</script>
+</body>
 </html>
