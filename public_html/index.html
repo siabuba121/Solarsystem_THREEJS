@@ -5,11 +5,11 @@
 	<title>Game</title>
 	<style>
 		body {
-			background-color: green;
+			background-color: black;
 		}
 		
 		#gameCanvas {
-			background-color: green;
+			background-color: black;
 			width: 1280px;
 			height: 720px;
 			margin: auto;
@@ -21,6 +21,13 @@
 			width: 30px;
 			height: 30px;
 			background-color: red;
+			position:absolute;
+		}
+		#explore{
+			color:white;
+			position:center;
+			text-align:center;
+			margin: 0 auto;
 		}
 	</style>
 </head>
@@ -29,11 +36,14 @@
 	<div id='gameCanvas'>
 		<div id="fps"></div>
 	</div>
+	<br>
+	<h1 id="explore">EXPLORE SOLARSYSTEM</h1>
 	<script src='./Scripts/three.min.js'></script>
+	<script src="Scripts/objLoader.js"></script>
 	<script src='./Scripts/keyboard.js'></script>
 	<script src="Scripts/Solarsystem.js"></script>
 	<script src='./Scripts/Colladaloader.js'></script>
-	<script type="application/x-glsl" id="sky-vertex">  
+	<script type="application/x-glsl" id="sky-vertex">
 	varying vec2 vUV;
 
 void main() {  

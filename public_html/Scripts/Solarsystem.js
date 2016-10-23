@@ -100,6 +100,29 @@ function create_ship(){
     return dae
 }
 
+function create_ship_fromobj(){
+    var mtlLoader =new THREE.MTLLoader();
+    mtlLoader.setBaseUrl('models/');
+    mtlLoader.setPath('models/');
+    mtlLoader.load('car.mtl', function (materials) {
+
+    materials.preload();
+
+    materials.materials.default.map.magFilter = THREE.NearestFilter;
+    materials.materials.default.map.minFilter = THREE.LinearFilter;
+
+    var objLoader = new THREE.OBJLoader();
+    objLoader.setMaterials(materials);
+    objLoader.setPath('models/');
+    objLoader.load('car.obj', function (object) {
+
+        scene.add(object);
+
+    });
+
+});
+}
+
 function sleep(milliseconds) {
   var start = new Date().getTime();
   for (var i = 0; i < 1e7; i++) {
@@ -135,7 +158,7 @@ function create_skybox(x,y,z){
 }
 
 function create_skydome(x,y,z){
-    var geometry = new THREE.SphereGeometry(2000, 60, 40);  
+    var geometry = new THREE.SphereGeometry(1000, 60, 40);  
     var uniforms = {  
     texture: { type: 't', value: THREE.ImageUtils.loadTexture('images/skybox/skydom.jpeg') }
  };
@@ -250,6 +273,8 @@ function add_planetsToScene(){
     neptun_axis.add(neptun);
     scene.add(neptun_axis);
     scene.add(pointlight);
+    
+    //  create_ship_fromobj();
     //create_ship();
 }
 function planet_orbiting(){
