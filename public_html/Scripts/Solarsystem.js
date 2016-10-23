@@ -6,6 +6,8 @@ var pointlight;
 var timeperiod;
 var orbittime;
 
+var car;
+
 var frametimestart;
 var frameactual;
 var frames;
@@ -14,6 +16,7 @@ var sun,
         mercury,
         wenus,
         ziemia,
+        ksiezyc,
         mars,
         jowisz,
         saturn,
@@ -35,6 +38,7 @@ var     sun_material,
         mercury_material,
         wenus_material,
         ziemia_material,
+        ksiezyc_material,
         mars_material,
         jowisz_material,
         saturn_material,
@@ -79,6 +83,29 @@ function create_planet(name, radius, segments, rings, material) {
     return planet;
 }
 
+function create_ship(){
+    var dae;
+    var loader = new THREE.ColladaLoader();
+    loader.options.convertUpAxis = true;
+    loader.load( 'models/car.dae', function ( collada ) {
+    dae = collada.scene;
+    dae.scale.x = dae.scale.y = dae.scale.z = 1;
+    dae.updateMatrix();
+    scene.add(dae);
+    dae.position.z+=400;
+    });
+    return dae
+}
+
+function sleep(milliseconds) {
+  var start = new Date().getTime();
+  for (var i = 0; i < 1e7; i++) {
+    if ((new Date().getTime() - start) > milliseconds){
+      break;
+    }
+  }
+}
+
 function create_ring(inner,outer,segments){
    var geometry = new THREE.RingGeometry( inner, outer, segments );
    var material = new THREE.MeshBasicMaterial( { color: "#CCCC99", side: THREE.DoubleSide } );
@@ -103,6 +130,8 @@ function setup_planet(){
     wenus.position.x+=120;
     
     ziemia=create_planet("ziemia",1.2,10,10,ziemia_material);
+    ksiezyc=create_planet("ksiezyc",0.3,10,10,ksiezyc_material);
+    ksiezyc.position.x+=20;
     ziemia_axis=create_orbit_axis(new THREE.MeshLambertMaterial({color: 0xD43401}))
     ziemia.position.x+=140;
     
@@ -127,6 +156,7 @@ function setup_planet(){
     neptun=create_planet("neptun",4.9528,10,10,neptun_material);
     neptun_axis=create_orbit_axis(new THREE.MeshLambertMaterial({color: 0xD43401}))
     neptun.position.x+=250;
+    
 }
 function scene_setup(){
     renderer=create_renderer(1280,720);
@@ -149,6 +179,7 @@ function material_setup(){
     mercury_material=create_material("textures/mercury_texture.jpg");
     wenus_material=create_material("textures/wenus_texture.jpg");
     ziemia_material=create_material("textures/ziemia_texture.jpg");
+    ksiezyc_material=create_material("textures/ksiezyc_texture.jpg");
     mars_material=create_material("textures/mars_texture.jpg");
     jowisz_material=create_material("textures/jupiter_texture.png");
     saturn_material=create_material("textures/saturn_texture.jpg");
@@ -161,6 +192,7 @@ function add_planetsToScene(){
     scene.add(mercury_axis);
     wenus_axis.add(wenus);
     scene.add(wenus_axis);
+    ziemia.add(ksiezyc);
     ziemia_axis.add(ziemia);
     scene.add(ziemia_axis);
     mars_axis.add(mars);
@@ -175,6 +207,7 @@ function add_planetsToScene(){
     neptun_axis.add(neptun);
     scene.add(neptun_axis);
     scene.add(pointlight);
+    //create_ship();
 }
 function planet_orbiting(){
     mercury_axis.rotation.y+=Math.PI/8,8;
@@ -185,6 +218,7 @@ function planet_orbiting(){
     saturn_axis.rotation.y+=Math.PI/1075,6;
     uran_axis.rotation.y+=Math.PI/3070,7;
     neptun_axis.rotation.y+=Math.PI/6022,3;
+    ziemia.rotation.y+=Math.PI/3;
 }
 
 function draw(){
